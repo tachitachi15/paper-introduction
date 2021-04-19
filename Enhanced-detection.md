@@ -15,27 +15,27 @@
 
 ## Chirp Sequence Waveform
 ### Chirp Sequence Waveform
-* $24$GHzのwide-area surveillance radar (LFM FMCW)を使用
-* beat frequency$f_B$は
+$24$GHzのwide-area surveillance radar (LFM FMCW)を使用
+ beat frequency$f_B$は
 
 $$ 
     f_B = -\frac{f_{sweep}}{T_{chirp}} \frac{2}{c}R - \frac{2}{\lambda}v_r = f_R + f_D
 $$
 
-* $f_{sweep}$:変調帯域幅, $T_{chirp}$:1チャープあたりの時間 $f_R$:距離による周波数差、$f_D$:速度による周波数差
+ $f_{sweep}$:変調帯域幅, $T_{chirp}$:1チャープあたりの時間 $f_R$:距離による周波数差、$f_D$:速度による周波数差
 
-* $T_{chirp}$が小さい場合or$f_{sweep}$が大きい場合は$f_R$の影響が支配的になり
+ $T_{chirp}$が小さい場合or$f_{sweep}$が大きい場合は$f_R$の影響が支配的になり
     
 $$
     f_B \approx -\frac{f_{sweep}}{T_{chirp}} \frac{2}{c}R
 $$
-* LFM波形の場合$v$を測定するためにチャープを$L$回を送信するからミキシング後の信号は
+ LFM波形の場合$v$を測定するためにチャープを$L$回を送信するからミキシング後の信号は
 
 $$
     s(t,l) = \mathrm{exp}(j2\pi(f_Bt-f_DlT_{chirp}+\varphi))
 $$
 
-* 一般的に歩行者の動きのモデルは５つのパーツからの反射を想定しているので（腕、足、胴体）歩行者から得られる信号は
+ 一般的に歩行者の動きのモデルは５つのパーツからの反射を想定しているので（腕、足、胴体）歩行者から得られる信号は
 
 $$
     
@@ -48,9 +48,9 @@ $$
 * RDMのサイズ　$512 \times 512$ 
 
 ### Doppler Spread Characteristic
-* 1ターゲットがRDMの1点に対応しているが、automotive-radar,wide-area surveillance radarのように高い分解能をもつレーダーでは歩行者のようなターゲットは1点ではなく線のように検出される。図３みたいな感じになる。
+ 1ターゲットがRDMの1点に対応しているが、automotive-radar,wide-area surveillance radarのように高い分解能をもつレーダーでは歩行者のようなターゲットは1点ではなく線のように検出される。図３みたいな感じになる。
 
-* 図２のレーダー(24GHz,最大検出距離600m)で実際に検証した結果でも確認済み
+ 図２のレーダー(24GHz,最大検出距離600m)で実際に検証した結果でも確認済み
 
 * $f_{PRF} = 1$kHzで$L=512$,ドップラー分解能が$\Delta f = f_{PRF}/L$
 
@@ -58,18 +58,77 @@ $$
 
 * 人の歩行速度は大体1.5m/sだから検出できる
 
-* 図４からドップラースプレッド特性は距離や速度に関係なく常に維持されている。
+ 図４からドップラースプレッド特性は距離や速度に関係なく常に維持されている。
 
 ## Adaptive CFAR Detection of Doppler Spread Targets
 
 ### Doppler-Spread Target Dtection Procedure
 OS-CFAR(orderd statical-constant false alarm rate)をドップラースプレッドターゲット向けに調整した提案手法をここで紹介。
 
-* Hough変換で線を検出して各ドップラービンを加算していくのがメインアイデア(図5)
+ Hough変換で線を検出して各ドップラービンを加算していくのがメインアイデア(図5)
 
 $$
     Y_n = \sum_{d=0}^{D-1}|x_{n,l+d}|^2
 $$
 
-* $x_{n,l}$:RDMの各要素(FFT後の結果)、n:距離インデックス、l:ドップラーインデックス,D:ドップラースプレッドが占めるセル数
+ $x_{n,l}$:RDMの各要素(FFT後の結果)、n:距離インデックス、l:ドップラーインデックス,D:ドップラースプレッドが占めるセル数
+
+ $Y_n$を$[n-n_1,n+n_1]$の範囲に渡って求める。$2n_1$で全レンジセル数になる
+
+ターゲット推定は仮説検定に基づいて行う。
+- $H_0$:帰無仮説　ここではターゲットが存在せずノイズのみの状況
+- $H_1$:対立仮説　ターゲットが存在する状況 
+
+$H_0$ではノイズのみ。$Y_n$はD個のi.i.dかつ平均0,分散$\sigma^2_n$の複素ガウス変数の2乗和になる。$E_n = 2Y_n/\sigma_n^2$とすると$E_n$は自由度2Dの$\chi^2$分布に従う。
+
+$$
+    p(E_n|H_0) = \frac{E_n^{(D-1)}e^{-\frac{E_n}{2}}}{2^D \Gamma(D)}
+$$
+
+累積分布関数は
+
+$$
+    P_{E_n}(E_n|H_0) = \frac{\gamma(D,\frac{E_n}{2})}{\Gamma(D)}
+$$
+
+$\gamma(s,x)$は不完全ガンマ関数の積分区間が[0,x]の方
+
+$$
+    \gamma(s,x) = \int_{0}^{x} t^{s-1} e^{-t} dt
+$$
+累積分布関数を微分してノイズだけの場合の確率密度関数が得られる。
+
+$$
+    p(Y_n|H_0) = 
+    \frac{
+        \left(
+            \frac{2Y_n}{\sigma_n^2}
+        \right)^{(D-1)}
+        e^{
+            -\frac{
+                \left(
+                    \frac{2Y_n}{\sigma_n^2}
+                \right)}
+            {2}
+        }
+    }
+    {2^D \Gamma(D)}
+    \frac{2}{\sigma^2}
+
+    = \frac{Y_n^{(D-1)}e^{-\frac{Y_n}{\sigma_n^2}}}{\sigma_n^{2D} \Gamma(D)}
+$$
+
+$Y_n$の累積分布関数は
+
+$$
+    P_{Y_n}(E_n|H_0) = \frac{\gamma(D,\frac{Y_n}{\sigma_n^2})}{\Gamma(D)}
+$$
+
+対立仮説$H_1$のターゲットがある場合は
+
+$$
+    p(Y_n|H_0) = \frac{Y_n^{(D-1)}e^{-\frac{Y_n}{\sigma_n^2 + \sigma_s^2}}}{(\sigma_s^2+\sigma_n^2)^{D} \Gamma(D)}
+$$
+
+
 
