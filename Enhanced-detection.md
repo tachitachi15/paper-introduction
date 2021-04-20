@@ -13,9 +13,9 @@
 * 2D-FFTを基に2D-CFAR(constant false alarm rate)[16]が提案されているがターゲットが歩行者などのドップラースプレッドターゲットに対しては不適切なアプローチ
 * Hough Transformを使ってRange Doppler Mapから歩行者ターゲットに対応する直線を検出して、直線上の電力を合計して検出能力を高める
 
-## Chirp Sequence Waveform
+## CHIRP SEQUENCE WAVEFORM AND SIGNAL PROCESSING
 ### Chirp Sequence Waveform
-$24$GHzのwide-area surveillance radar (LFM FMCW)を使用
+24GHzのwide-area surveillance radar (LFM FMCW)を使用
  beat frequency$f_B$は
 
 $$ 
@@ -180,6 +180,52 @@ $$
     p_m(y) = m \binom{2n_1}{m}(1-P_{Y_n}(Y_n|H_0))^{2n_1-m}P_{Y_n}(Y_n|H_0)^{m-1}p(Y_n|H_0)
 $$
 
+$$
+    \begin{aligned}
+    p_{m}(y)=& m\left(\begin{array}{c}
+    2 \times n_{1} \\
+    m
+    \end{array}\right)\left(1-\frac{\gamma\left(D, \frac{y}{\sigma_{n}^{2}}\right)}{\Gamma(D)}\right)^{2 \times n_{1}-m} \\
+    & \cdot\left(\frac{\gamma\left(D, \frac{y}{\sigma_{n}^{2}}\right)}{\Gamma(D)}\right)^{m-1} \frac{(y)^{(D-1)} e^{-\frac{y}{\sigma_{n}^{2}}}}{\sigma_{n}^{2 D} \Gamma(D)}
+    \end{aligned}
+$$
+$P_{fa}$は
+
+$$
+    \begin{aligned}
+    P_{\mathrm{fa}}=& P\left[Y_{n} \geq \alpha_{\mathrm{OS}} \cdot \mathrm{Z}\right] \\
+    =& \int_{0}^{+\infty} P\left[Y_{n} \geq \alpha_{\mathrm{OS}} \cdot y\right] p_{m}(y) d y \\
+    =& m\left(\begin{array}{c}
+    2 \times n_{1} \\
+    m
+    \end{array}\right) \int_{0}^{+\infty}\left(1-\frac{\gamma\left(D, \frac{\alpha_{0 s} \cdot y}{\sigma_{n}^{2}}\right)}{\Gamma(D)}\right) \\
+    & \times\left(1-\frac{\gamma\left(D, \frac{y}{\sigma_{n}^{2}}\right)}{\Gamma(D)}\right)^{2 \times n_{1}-m}\left(\frac{\gamma\left(D, \frac{y}{\sigma_{n}^{2}}\right)}{\Gamma(D)}\right)^{m-1} \\
+    & \times \frac{(y)^{(D-1)} e^{-\frac{y}{\sigma_{n}^{2}}}}{\sigma_{n}^{2 D} \Gamma(D)} d y \\
+    =& m \binom{2\times n_1}{m} \int_{0}^{+\infty}\left(1-\frac{\gamma\left(D, \alpha_{\mathrm{OS}} \cdot u\right)}{\Gamma(D)}\right) \\
+    & \times\left(1-\frac{\gamma(D, u)}{\Gamma(D)}\right)^{2 \times n_{1}-m}\left(\frac{\gamma(D, u)}{\Gamma(D)}\right)^{m-1} \\
+    & \times \frac{(u)^{(D-1)} e^{-u}}{\Gamma(D)} d u .
+    \end{aligned}
+$$
+$u=\frac{y}{\sigma_n^2}$で置換
+多分論文の二項係数だったところが$(2\times n_1 m)$になってるのはミス。
+
+この式から$P_{fa}$は平均ノイズ電力$\sigma_n^2$に依存しないので、提案手法はCFARの性質を満たしている。
+
+
+## DETECTION PERFORMANCE 
+
+図6は$\sigma_n^2=1$,$\sigma_s^2=10$,$D=10$に設定
+* (a)が[16]で使われていた指数分布に従う確率密度関数(10にD=1を代入すると得られるはず)
+* (b)が論文で提案されていた自由度2Dの$\chi^2$分布に従う確率密度関数
+
+(a),(b)を比較すると(b)の方が$H_0$,$H_1$を分離できている。
+
+図7はターゲットの検出確率の比較
+図8のように自由度2Dが上がるほど検出確率は高くなっている。
+
+$P_{fa}$を決めて(22)から$a_{OS}$を決定するので$a_{OS}$は$m,D$に依存する。この計算は時間がかかるが、ノイズ電力に依存する物ではないので予めレーダーシステムに組みこむことが可能
+
+Table2は$P_{fa}=10^{-6}$に設定した時の$a_{OS}$
 
 
 
