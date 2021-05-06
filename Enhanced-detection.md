@@ -1,21 +1,35 @@
-## abstract 
-* 歩行者のようなターゲットはrange-doppler-mapに単一の点ではなく線のような形で観測される。　腕、足、動体などが異なる速度で動くため
+## 概要
+* wide-area surveillance radar(監視用のレーダー)でドップラースプレッドの性質を使って遠方に存在する歩行者を測定することが目標
+* 歩行者のようなターゲットは腕、足、動体などが異なる速度で動くためrange-doppler-mapに単一の点ではなく線のような形で観測される。（ドップラースプレッド）
 * 既存の手法はドップラースプレッドの性質を測定精度向上のために使えていない
-* ordered statical constant false alarm rateをドップラースプレッドターゲット向けに調整した方法を提案
-* wide-area surveillance radar(監視用のレーダー)を使ってドップラースプレッドの性質を使って遠方に存在する歩行者を測定することが目標
+* ordered statical constant false alarm rate(OS-CFAR)をドップラースプレッドターゲット向けに調整した方法を提案（CFARはノイズ電力によらない一定の値の閾値を与えてピークかどうか判定する方法）
 
-## introduction
+
+## 導入
 * FMCWレーダーはパルスレーダーに比べて低電力、変調の簡単さ、信号処理のシンプルさ、速度と距離を同時に測定できるメリットがある
 * 監視レーダーや自動運転とかのレーダーにとって歩行者は重要なターゲットだが遠くにいる場合検出が困難
 - 歩行者はRCS(radar cross section:レーダー有効断面積)が$1m^2$で低い　→　受信電力が低くなり検知が困難
 - 監視レーダーではそもそも送信電力をあまり大きくできない
 
-* 2D-FFTを基に2D-CFAR(constant false alarm rate)[16]が提案されているがターゲットが歩行者などのドップラースプレッドターゲットに対しては不適切なアプローチ
+* 2D-FFTを基に2D-CFAR[16]が提案されているがターゲットが歩行者などのドップラースプレッドターゲットに対しては不適切なアプローチ
 * Hough Transformを使ってRange Doppler Mapから歩行者ターゲットに対応する直線を検出して、直線上の電力を合計して検出能力を高める
 
-## CHIRP SEQUENCE WAVEFORM AND SIGNAL PROCESSING
-### Chirp Sequence Waveform
-24GHzのwide-area surveillance radar (LFM FMCW)を使用
+## 論文の内容
+* FMCWレーダーでの測定について
+    - 波形
+    - 信号処理
+    - ドップラースプレッド特性
+* CFAR法での検出
+    - ドップラースプレッドターゲットの検出方法
+    - OS-CFAR法
+* 性能評価
+    - 同様のシチュエーションを想定している[16]の方法と比較
+    - 検出能力についての考察
+
+
+## FMCWレーダーでの測定
+### チャープ波形
+24GHzのLFM-FMCWレーダーを使用
  beat frequency$f_B$は
 
 $$ 
@@ -38,32 +52,25 @@ $$
  一般的に歩行者の動きのモデルは５つのパーツからの反射を想定しているので（腕、足、胴体）歩行者から得られる信号は
 
 $$
-    
     s(t,l) = \sum_{k=1}^{K} \mathrm{exp}(j2\pi(f_Bt-f_{D_k}lT_{chirp}+\varphi_{k}))
 $$
 
-### Signal Processing Procedure
+### 信号処理
 * Fig1みたいに2D-FFTにかけて距離、速度を検出する。
 * 縦方向のFFTで距離、横方向のFFTで速度を検出
 * RDMのサイズ　$512 \times 512$ 
 
-### Doppler Spread Characteristic
+### ドップラースプレッド
  1ターゲットがRDMの1点に対応しているが、automotive-radar,wide-area surveillance radarのように高い分解能をもつレーダーでは歩行者のようなターゲットは1点ではなく線のように検出される。図３みたいな感じになる。
 
  図２のレーダー(24GHz,最大検出距離600m)で実際に検証した結果でも確認済み
 
-* $f_{PRF} = 1$kHzで$L=512$,ドップラー分解能が$\Delta f = f_{PRF}/L$
-
-* ドップラー周波数が$f_d = 2v/\lambda$なので検出可能速度は[-3.125,3.125]
-
-* 人の歩行速度は大体1.5m/sだから検出できる
-
  図４からドップラースプレッド特性は距離や速度に関係なく常に維持されている。
 
-## Adaptive CFAR Detection of Doppler Spread Targets
-
-### Doppler-Spread Target Dtection Procedure
+## CFAR法での検出
 OS-CFAR(orderd statical-constant false alarm rate)をドップラースプレッドターゲット向けに調整した提案手法をここで紹介。
+### ドップラースプレッドターゲットの検出方法
+
 
  Hough変換で線を検出して各ドップラービンを加算していくのがメインアイデア(図5)
 
@@ -140,7 +147,7 @@ $$
     P_{Y_n}(Y_n|H_1) = \frac{\gamma(D,\frac{Y_n}{\sigma_n^2+\sigma_s^2})}{\Gamma(D)}
 $$
 
-ネイマンピアソンの基準[34]によると
+$H_0$の元で$Y_n>T_n$となる確率は（棄却率）
 
 $$
     P_{fa} = \int_{T_n}^{\infty} p(Y_n|H_0) dY_n
@@ -152,9 +159,17 @@ $$
     P_d = \int_{T_n}^{\infty} p(Y_n|H_1) dY_n
 $$
 
-### Doppler-Spread Target OS-CFAR Detection Procedure
+### ドップラースプレッドターゲットをOS-CFARで検出する方法
+閾値$T_n$をどうやって決めるか？この決め方にCFARの特徴が現れる。
 
-CA-CFAR(cell average constant false alarm rate)はマルチターゲット環境ではあまり良くないがOS-CFARを元にすればより耐性が強くなる。
+CFARは主に
+* CA-CFAR(cell average constant false alarm rate)
+* OS-CFAR(order static constant false alarm rate)←一般的にこっちの方が性能が良いっていう論文が何個かあった
+
+の二種類に分類される。
+
+CA-CFARはマルチターゲット環境ではあまり良くない。
+本論文ではOS-CFARを採用している。
 
 OS-CFARを使うために、$[Y_{n-n_1},...,Y_{n-1},Y_{n+1},...,Y_{n+n_1}]$を昇順に並べる。
 
@@ -212,10 +227,10 @@ $u=\frac{y}{\sigma_n^2}$で置換
 この式から$P_{fa}$は平均ノイズ電力$\sigma_n^2$に依存しないので、提案手法はCFARの性質を満たしている。
 
 
-## DETECTION PERFORMANCE 
+## 性能
 
 図6は$\sigma_n^2=1$,$\sigma_s^2=10$,$D=10$に設定
-* (a)が[16]で使われていた指数分布に従う確率密度関数(10にD=1を代入すると得られるはず)
+* (a)が[16]で使われていた指数分布に従う確率密度関数
 * (b)が論文で提案されていた自由度2Dの$\chi^2$分布に従う確率密度関数
 
 (a),(b)を比較すると(b)の方が$H_0$,$H_1$を分離できている。
@@ -242,7 +257,7 @@ $\mathrm{ratio}<1$の時はターゲットが検出不能であり、ratioはタ
 
 図11から提案手法(a)(b)に大差はないが、どちらも従来のOS-CFARの性能を上回っている。数値が変動しているのはターゲットのRCS(レーダー有効断面積)が変化しているからだが、どのアプローチでも条件は同じなのでアプローチ間の比較には影響はない。
 
-図12は提案手法(a)でDを変化させてターゲットの検出能力を示している。D=50の時がD=10の時より検出能力という点で優れている訳ではない。これは歩行者の反射点の強さが大きく異なるから。
+図12は提案手法(a)でDを変化させてターゲットの検出能力を示している。D=50の時がD=10の時より検出能力という点で優れている訳ではない。これは歩行者の反射点の強さが大きく異なるから。(図13は提案手法(b)の場合)
 
 
 図14からはD=10が一番実現可能な値だがこの値は速度分解能の値に大きく依存する。
