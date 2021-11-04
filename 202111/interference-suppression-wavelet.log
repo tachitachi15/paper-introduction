@@ -1,4 +1,4 @@
-This is e-pTeX, Version 3.14159265-p3.8.2-190131-2.6 (utf8.euc) (TeX Live 2019) (preloaded format=platex 2020.3.2)  4 NOV 2021 13:50
+This is e-pTeX, Version 3.14159265-p3.8.2-190131-2.6 (utf8.euc) (TeX Live 2019) (preloaded format=platex 2020.3.2)  4 NOV 2021 14:51
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -398,14 +398,19 @@ Overfull \hbox (19.70145pt too wide) detected at line 7
 []
  []
 
-[2]) (./sources/wavelet.tex) [3] (./interference-suppression-wavelet.aux) ) 
+[2]) (./sources/wavelet.tex
+LaTeX Font Info:    Font shape `JT1/gt/m/n' will be
+(Font)              scaled to size 11.53198pt on input line 11.
+LaTeX Font Info:    Font shape `JY1/gt/m/n' will be
+(Font)              scaled to size 11.53198pt on input line 11.
+ [3]) [4] (./interference-suppression-wavelet.aux) ) 
 Here is how much of TeX's memory you used:
- 4539 strings out of 481760
- 57188 string characters out of 5931297
+ 4540 strings out of 481760
+ 57203 string characters out of 5931297
  313915 words of memory out of 5000000
- 19795 multiletter control sequences out of 15000+600000
- 547529 words of font info for 95 fonts, out of 8000000 for 9000
+ 19796 multiletter control sequences out of 15000+600000
+ 548117 words of font info for 98 fonts, out of 8000000 for 9000
  934 hyphenation exceptions out of 8191
  39i,18n,37p,486b,263s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on interference-suppression-wavelet.dvi (3 pages, 9672 bytes).
+Output written on interference-suppression-wavelet.dvi (4 pages, 11880 bytes).

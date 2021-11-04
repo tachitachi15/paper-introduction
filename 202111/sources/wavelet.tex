@@ -1,0 +1,26 @@
+\section{proposed mutual interference suppresion using wavelet denoising}
+ミキサー出力をローパスフィルタにかけた出力は、干渉波と送信信号の傾きが異なる場合(Fig3(a)みたいな時)
+\begin{equation}
+    L_{I}(t)=L(M(t))+L\left(S(t) I^{D S}(t)\right)
+\end{equation}
+となる。この論文では干渉成分$L\left(S(t) I^{D S}(t)\right)$の電力が所望信号$L(M(t))$に比べて非常に大きいので、まず$L\left(S(t) I^{D S}(t)\right)$をwavelet変換を使って推定する。その後、推定したパラメータを使って$L\left(S(t) I^{D S}(t)\right)$を再構成して$L_I(t)$から取り除くことで所望信号$L(M(t))$を得る。
+\begin{equation}
+    \hat{L}(M(t))=L_{I}(t)-\hat{L}\left(S(t) I^{D S}(t)\right)
+\end{equation}
+
+\subsection{Decomposition of Low-Pass Filter Output Using Wavelet Transform}
+\begin{equation}
+    \psi(t)=\left\{\begin{array}{lc}
+    1 & (0 \leq t<1 / 2) \\
+    -1 & (1 / 2 \leq t<1) \\
+    0 & (t<0, t \geq 1)
+    \end{array}\right.
+\end{equation}
+
+\begin{equation}
+    W_{a, b}=\int_{-\infty}^{\infty} L_{I}(t) \psi_{a, b}^{*}(t) d t
+\end{equation}
+
+\begin{equation}
+    \psi_{a, b}(t)=2^{\frac{a}{2}} \psi\left(2^{a} t-b\right), \quad\left(a=1,2, \cdots, a_{T}\right) .
+\end{equation}
