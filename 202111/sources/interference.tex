@@ -1,0 +1,39 @@
+\section{interference effect}
+干渉のパターンは傾きが同じ場合(a)と違う場合(b)の2パターンある.
+干渉波は$I$個の干渉レーダー波の和からなる。
+
+\begin{align}    
+    I^{S S}(t) &= \sum_{i=1}^{I}\left\{A_{R_{i}} \exp \left(j\left(2 \pi\left(f_{c_{i}}+f_{d_{i}}-\frac{\Delta B_{i}}{2}\right)\left(t-t_{d_{i}}\right)+\pi \frac{\Delta B_{i}}{\Delta T_{i}}\left(t-t_{d_{i}}\right)^{2}\right)\right)\right\}+n(t) \\ & \left(\min _{i} t_{d_{i}} \leq t \leq \Delta T+\max _{i} t_{d_{i}}\right) 
+\end{align}
+$f_{c_i}$, $\Delta B_i$, $\Delta T_i$は干渉レーダーのパラメータ
+
+送信信号$S(t)$と干渉波$I^{S S}$ or $I^{D S}$の積から生じる信号は
+\begin{equation}
+    \begin{array}{l}
+    L\left(S(t) I^{S S}(t)\right) \\
+    \qquad \begin{aligned}
+    =& A_{T} \sum_{i=1}^{I}\left\{A _ { R _ { i } } \operatorname { e x p } \left(j \left(2 \pi \left(\left(f_{c}-f_{c_{i}}\right)\right.\right.\right.\right.\\
+    &\left.-\left(\frac{\Delta B}{2}-\frac{\Delta B_{i}}{2}\right)+\left(\frac{\Delta B_{i}}{\Delta T_{i}} t_{d_{i}}-f_{d_{i}}\right)\right) t \\
+    &+\pi\left(\frac{\Delta B}{\Delta T}-\frac{\Delta B_{i}}{\Delta T_{i}}\right) t^{2} \\
+    &+2 \pi\left(f_{c_{i}}-\frac{\Delta B_{i}}{2}+f_{d_{i}}\right) t_{d_{i}} \\
+    &\left.\left.\left.\quad-\pi \frac{\Delta B_{i}}{\Delta T_{i}} t_{d_{i}}^{2}\right)\right)\right\}+L(S(t) n(t))\left(\max _{l} t_{d_{l}} \leq t \leq \Delta T\right)
+    \end{aligned}
+    \end{array}
+\end{equation}
+
+\begin{equation}
+    \begin{array}{l}
+    L\left(S(t) I^{D S}(t)\right) \\
+    \qquad \begin{aligned}
+    =& A_{T} \sum_{i=1}^{I}\left\{A _ { R _ { i } } \operatorname { e x p } \left(j \left(2 \pi \left(\left(f_{c}-f_{c_{i}}\right)\right.\right.\right.\right.\\
+    &\left.-\left(\frac{\Delta B}{2}+\frac{\Delta B_{i}}{2}\right)-\left(\frac{\Delta B_{i}}{\Delta T_{i}} t_{d_{i}}+f_{d_{i}}\right)\right) t \\
+    &+\pi\left(\frac{\Delta B}{\Delta T}+\frac{\Delta B_{i}}{\Delta T_{i}}\right) t^{2} \\
+    &+2 \pi\left(f_{c_{i}}+\frac{\Delta B_{i}}{2}+f_{d_{i}}\right) t_{d_{i}} \\
+    &\left.\left.\left.+\pi \frac{\Delta B_{i}}{\Delta T_{i}} t_{d_{i}}^{2}\right)\right)\right\}+L(S(t) n(t))\left(\max _{l} t_{d_{l}} \leq t \leq \Delta T\right)
+    \end{aligned}
+    \end{array}
+\end{equation}
+
+Fig3は干渉と送受信信号の傾きが違うケースの図で紫のラインが送信信号と干渉信号の周波数差を表している。カットオフ周波数以下のところは全てFFTの結果に現れるから所望成分が埋もれる。\\
+干渉の影響を見るため$(R_I,v_I) = (20m, -15m/s)$, $(R_T, v_T) = (100m, 10m/s)$に設定してFig1の状況でシミュレーションした結果が図4(a),(b)に示されている。(a)から$t=2.75ms$の時に強いパルス風の波があって、(b)からそれが周波数領域全体に影響を与えているのがよくわかる。(b)のようにピークと周りの周波数要素の電力差に大差がない場合CFARによるピーク検出はうまくいかない。
+
