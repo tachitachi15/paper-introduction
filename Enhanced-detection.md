@@ -55,6 +55,8 @@ $$
     s(t,l) = \sum_{k=1}^{K} \mathrm{exp}(j2\pi(f_Bt-f_{D_k}lT_{chirp}+\varphi_{k}))
 $$
 
+![fig1](~/Desktop/fig1)
+
 ### 信号処理
 * Fig1みたいに2D-FFTにかけて距離、速度を検出する。
 * 縦方向のFFTで距離、横方向のFFTで速度を検出
