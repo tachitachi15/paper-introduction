@@ -9,6 +9,7 @@
 \end{equation}
 
 \subsection{Decomposition of Low-Pass Filter Output Using Wavelet Transform}
+Haarウェーブレットのマザーウェーブレット関数$\psi(t)$は
 \begin{equation}
     \psi(t)=\left\{\begin{array}{lc}
     1 & (0 \leq t<1 / 2) \\
@@ -17,10 +18,19 @@
     \end{array}\right.
 \end{equation}
 
+$L_I(t)$への離散ウェーブレット変換は
 \begin{equation}
     W_{a, b}=\int_{-\infty}^{\infty} L_{I}(t) \psi_{a, b}^{*}(t) d t
 \end{equation}
+で表され、
+\begin{align}
+    \psi_{a, b}(t) &= 2^{\frac{a}{2}} \psi\left(2^{a} t-b\right)\cr
+                   &= 2^{\frac{a}{2}} \psi\left(\frac{t-2^{-a}b}{2^{-a}}\right) \quad\left(a=1,2, \cdots, a_{T}\right) .
+\end{align}
+である。$a,b$はそれぞれスケーリング要素と時間要素になっていて、$a$を大きくすれば$\psi_{a,b}$は収縮する。
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{Components/wavelet_example.jpg}    
+\end{figure}
 
-\begin{equation}
-    \psi_{a, b}(t)=2^{\frac{a}{2}} \psi\left(2^{a} t-b\right), \quad\left(a=1,2, \cdots, a_{T}\right) .
-\end{equation}
+前についてる$2^{\frac{a}{2}}$は正規化係数で各スケールでの基底の電力の合計が$1$になるように正規化されている。
