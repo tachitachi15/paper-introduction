@@ -34,3 +34,24 @@ $L_I(t)$への離散ウェーブレット変換は
 \end{figure}
 
 前についてる$2^{\frac{a}{2}}$は正規化係数で各スケールでの基底の電力の合計が$1$になるように正規化されている。
+
+\subsection{threholding}
+ウェーブレット変換で係数$W_{a,b}$が得られたら、どの係数が干渉信号に対応するか閾値から判定する。
+一般的によく使われるのはsoft threholdingとhard thresholdingでどちらも$\lambda$より絶対値が小さい$W_{a,b}$は消される。
+\begin{align}
+    f_s(W_{a,b}) &= 
+        \begin{cases}
+            W_{a,b}-sgn(W_{a,b})\lambda & |W_{a,b}|\geq \lambda \\
+            0, & otherwise
+        \end{cases} \cr
+    f_h(W_{a,b}) &= 
+    \begin{cases}
+        W_{a,b}, & |W_{a,b}|\geq \lambda \\
+        0, & otherwise
+    \end{cases} 
+\end{align}
+
+ここでは[33]で与えられるmodified-universal thresholdを使っている。
+\begin{align}
+    \lambda = \hat{\sigma}_a \sqrt{2\log(N_I)}
+\end{align}

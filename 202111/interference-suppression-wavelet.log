@@ -1,4 +1,4 @@
-This is e-pTeX, Version 3.14159265-p3.8.2-190131-2.6 (utf8.sjis) (TeX Live 2019/W32TeX) (preloaded format=platex 2019.8.28)  10 NOV 2021 18:37
+This is e-pTeX, Version 3.14159265-p3.8.2-190131-2.6 (utf8.sjis) (TeX Live 2019/W32TeX) (preloaded format=platex 2019.8.28)  11 NOV 2021 16:41
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -407,14 +407,17 @@ LaTeX Font Info:    Font shape `JY1/gt/m/n' will be
 (Font)              scaled to size 11.53198pt on input line 11.
 File: Components/wavelet_example.jpg Graphic file (type bmp)
 <Components/wavelet_example.jpg>
- [3]) [4] (./interference-suppression-wavelet.aux) ) 
+ [3]) (./sources/results.tex [4]
+File: Components/experiment_situation.jpg Graphic file (type bmp)
+<Components/experiment_situation.jpg>
+) [5] [6] (./interference-suppression-wavelet.aux) ) 
 Here is how much of TeX's memory you used:
- 4111 strings out of 493216
- 49368 string characters out of 6147083
+ 4117 strings out of 493216
+ 49522 string characters out of 6147083
  130793 words of memory out of 5000000
- 7933 multiletter control sequences out of 15000+600000
+ 7935 multiletter control sequences out of 15000+600000
  19084 words of font info for 87 fonts, out of 8000000 for 9000
  934 hyphenation exceptions out of 8191
- 33i,11n,27p,481b,293s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 33i,14n,27p,481b,293s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on interference-suppression-wavelet.dvi (4 pages, 12316 bytes).
+Output written on interference-suppression-wavelet.dvi (6 pages, 15228 bytes).
